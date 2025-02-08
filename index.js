@@ -27,6 +27,9 @@ dbConnection()
 // Accept to JSON
 app.use(express.json())
 
+//res.getModelList
+app.use(require("./src/middlewares/queryHandler"))
+
 /* ------------------------------------------------------- */
 //? ROUTES
 
@@ -39,6 +42,8 @@ app.all("/", (req, res) => {
     })
 })
 
+//Routes
+app.use(require("./src/routes/index"))
 /* ------------------------------------------------------- */
 
 //* errorHndler:
