@@ -1,9 +1,9 @@
 "use strict"
 
 const { mongoose } = require("../configs/dbConnection")
+const passwordEncrypt = require("../helpers/passwordEncrypt")
 
 const UserSchema = new mongoose.Schema({
-    
     username: {
         type: String,
         trim: true,
@@ -47,6 +47,30 @@ const UserSchema = new mongoose.Schema({
     }
 }, {
     collection: "users", timestamps: true
+})
+
+UserSchema.pre("save", function (next) {
+    // console.log("this is from pre middleware")
+    // console.log(this)
+
+    const data = this
+
+    // Email validation
+    const isEmailValidated = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email)
+
+    if (!isEmailValidated) {
+        // throw new Error("Email is not validated")
+        next(new Error("Email is not validated"))
+    }
+
+    // Password validation
+    const isPasswordValidated = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.]).{8,}$/.test(data.password)
+
+    if (!isPasswordValidated) next(new Error("password must be at least 8 characters including a number and an uppercase letter."))
+
+    data.password = passwordEncrypt(data.password)
+
+    next()
 })
 
 module.exports = mongoose.model("User", UserSchema)
