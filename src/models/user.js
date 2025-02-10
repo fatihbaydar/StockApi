@@ -49,14 +49,14 @@ const UserSchema = new mongoose.Schema({
     collection: "users", timestamps: true
 })
 
-UserSchema.pre("save", function (next) {
+UserSchema.pre(["save", "updateOne"], function (next) {
     // console.log("this is from pre middleware")
     // console.log(this)
 
-    const data = this
+    const data = this?._update ?? this
 
     // Email validation
-    const isEmailValidated = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email)
+    const isEmailValidated = data.email ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(data.email) : true
 
     if (!isEmailValidated) {
         // throw new Error("Email is not validated")
