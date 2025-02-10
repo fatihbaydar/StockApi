@@ -10,5 +10,6 @@ router.use("/brand", require("./brand"))
 router.use("/product", require("./product"))
 router.use("/purchase", require("./purchase"))
 router.use("/sale", require("./sale"))
+router.use("/documents", require("./document"))
 
 module.exports = router
