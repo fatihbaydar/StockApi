@@ -64,11 +64,11 @@ UserSchema.pre(["save", "updateOne"], function (next) {
     }
 
     // Password validation
-    const isPasswordValidated = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.]).{8,}$/.test(data.password)
+    const isPasswordValidated = data.password ? /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.]).{8,}$/.test(data.password) : true
 
     if (!isPasswordValidated) next(new Error("password must be at least 8 characters including a number and an uppercase letter."))
 
-    data.password = passwordEncrypt(data.password)
+    if (data.password) data.password = passwordEncrypt(data.password)
 
     next()
 })
