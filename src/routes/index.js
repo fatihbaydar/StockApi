@@ -11,5 +11,6 @@ router.use("/product", require("./product"))
 router.use("/purchase", require("./purchase"))
 router.use("/sale", require("./sale"))
 router.use("/documents", require("./document"))
+router.use("/auth", require("./auth"))
 
 module.exports = router
