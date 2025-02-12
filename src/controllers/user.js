@@ -1,6 +1,9 @@
 "use strict"
 
 const User = require("../models/user")
+const passwordEncrypt = require("../helpers/passwordEncrypt")
+const token = require("../models/token")
+const jwt = require("jsonwebtoken")
 
 module.exports = {
     list: async (req, res) => {
@@ -39,8 +42,21 @@ module.exports = {
         */
         const data = await User.create(req.body)
 
-        res.status(201).send({
+        /* Auth Login */
+        // Simple Token
+        const tokenData = await token.create({
+            userId: data._id,
+            token: passwordEncrypt(data._id + Date.now())
+        })
+
+        //JWT
+        const accessToken = jwt.sign(data.toJSON(), process.env.ACCESS_KEY, { expiresIn: "15m" })
+        const refreshToken = jwt.sign({ _id: data._id, password: data.password }, process.env.REFRESH_KEY, { expiresIn: "3d" })
+
+        res.status(200).send({
             error: false,
+            token: tokenData.token,
+            bearer: { accessToken, refreshToken },
             data
         })
     },
