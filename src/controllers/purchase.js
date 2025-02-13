@@ -16,7 +16,12 @@ module.exports = {
                 </ul>
             `
         */
-        const data = await res.getModelList(Purchase)
+        const data = await res.getModelList(Purchase, {}, [
+            { path: "userId", select: "username,email" },
+            { path: "firmId", select: "name" },
+            { path: "brandId", select: "name" },
+            { path: "productId", select: "name" },
+        ])
 
         res.status(200).send({
             error: false,
@@ -50,7 +55,12 @@ module.exports = {
            #swagger.tags = ["Purchases"]
            #swagger.summary = "Get Single Purchase"
         */
-        const data = await Purchase.findOne({ _id: req.params.id })
+        const data = await Purchase.findOne({ _id: req.params.id }).populate([
+            { path: "userId", select: "username,email" },
+            { path: "firmId", select: "name" },
+            { path: "brandId", select: "name" },
+            { path: "productId", select: "name" },
+        ])
 
         res.status(200).send({
             error: false,

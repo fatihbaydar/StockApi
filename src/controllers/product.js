@@ -16,7 +16,9 @@ module.exports = {
                 </ul>
             `
         */
-        const data = await res.getModelList(Product)
+        const data = await res.getModelList(Product, {}, [
+            { path: "brandId", select: "name" },
+            { path: "categoryId", select: "name" }])
 
         res.status(200).send({
             error: false,
@@ -50,7 +52,9 @@ module.exports = {
            #swagger.tags = ["Products"]
            #swagger.summary = "Get Single Product"
         */
-        const data = await Product.findOne({ _id: req.params.id })
+        const data = await Product.findOne({ _id: req.params.id }).populate([
+            { path: "brandId", select: "name" },
+            { path: "categoryId", select: "name" }])
 
         res.status(200).send({
             error: false,
