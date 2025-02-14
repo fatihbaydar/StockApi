@@ -1,6 +1,7 @@
 "use strict"
 
 const Purchase = require("../models/purchase")
+const Product = require("../models/product")
 
 module.exports = {
     list: async (req, res) => {
@@ -42,7 +43,12 @@ module.exports = {
                 }
             }
         */
+        req.body.userId = req.user._id
+
         const data = await Purchase.create(req.body)
+        if (data) {
+            await Product.updateOne({ _id: data.productId }, { $inc: { quantity: data.quantity } })
+        }
 
         res.status(201).send({
             error: false,
@@ -81,6 +87,21 @@ module.exports = {
                 }
             }
         */
+
+        if (req.body?.quantity) {
+            // current transaction quantity information
+            const currentPurchase = await Purchase.findOne({ _id: req.params.id })
+
+            // Calculate the difference
+            const difference = req.body.quantity - currentPurchase.quantity
+
+            // reflecting the difference on the product
+            await Product.updateOne({ _id: currentPurchase.productId }, { $inc: { quantity: +difference } })
+
+            // productId should not change
+            req.body.productId = currentPurchase.productId
+        }
+
         const data = await Purchase.findOne({ _id: req.params.id }, req.body, { runValidators: true })
 
         res.status(220).send({
@@ -95,7 +116,13 @@ module.exports = {
             #swagger.tags = ["Purchases"]
             #swagger.summary = "Delete Single Purchase"
         */
+        const currentPurchase = await Purchase.findById(req.params.id)
+
         const data = await Purchase.deleteOne({ _id: req.params.id })
+
+        if (data.deletedCount) {
+            await Product.updateOne({ _id: currentPurchase.productId }, { $inc: { quantity: -currentPurchase.quantity } })
+        }
 
         res.status(data.deletedCount ? 204 : 404).send({
             error: !data.deletedCount,
