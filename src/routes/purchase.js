@@ -3,15 +3,16 @@
 const router = require("express").Router()
 
 const { list, create, read, update, deletee } = require("../controllers/purchase")
+const { isLogin, isStaff } = require("../middlewares/permissions")
 
 router.route("/")
-    .get(list)
-    .post(create)
+    .get(isLogin, list)
+    .post(isLogin, create)
 
 router.route("/:id")
-    .get(read)
-    .put(update)
-    .patch(update)
-    .delete(deletee)
+    .get(isLogin, read)
+    .put(isStaff, update)
+    .patch(isStaff, update)
+    .delete(isStaff, deletee)
 
 module.exports = router
