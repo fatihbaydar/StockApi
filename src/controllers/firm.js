@@ -37,6 +37,13 @@ module.exports = {
                 }
             }
         */
+        req.body.images = []
+        if (req.files) {
+            for (let file of req.files) {
+                req.body.images.push(file.path)
+            }
+        }
+
         const data = await Firm.create(req.body)
 
         res.status(201).send({

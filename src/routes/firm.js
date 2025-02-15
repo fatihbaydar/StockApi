@@ -4,17 +4,18 @@ const router = require("express").Router()
 
 const { list, create, read, update, deletee } = require("../controllers/firm")
 const { isAdmin } = require("../middlewares/permissions")
+const upload = require("../middlewares/upload")
 
 router.use(isAdmin)
 
 router.route("/")
     .get(list)
-    .post(create)
+    .post(upload.array("image"), create)
 
 router.route("/:id")
     .get(read)
-    .put(update)
-    .patch(update)
+    .put(upload.array("image"), update)
+    .patch(upload.array("image"), update)
     .delete(deletee)
 
 module.exports = router

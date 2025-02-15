@@ -36,6 +36,9 @@ app.use(require("./src/middlewares/logger"))
 //res.getModelList
 app.use(require("./src/middlewares/queryHandler"))
 
+// Static files
+app.use("/upload", express.static("./upload"))
+
 /* ------------------------------------------------------- */
 //? ROUTES
 

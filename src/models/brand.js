@@ -9,9 +9,9 @@ const BrandSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    image: {
-        type: String,
-        trim: true
+    images: {
+        type: Array,
+        default: []
     },
 }, { collection: "brands", timestamps: true })
 
