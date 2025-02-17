@@ -13,7 +13,8 @@ const logDirectory = path.join(rootDirectory, "logs");
 if (!fs.existsSync(logDirectory)) {
   console.log("Logs folder has been created ");
   fs.mkdirSync(logDirectory, { recursive: true });
-} else console.log("Logs folder is exist");
+} 
+// else console.log("Logs folder is exist");
 
 const logStream = fs.createWriteStream(
   path.join(logDirectory, `${today}.log`),

@@ -4,6 +4,7 @@ const User = require("../models/user")
 const passwordEncrypt = require("../helpers/passwordEncrypt")
 const token = require("../models/token")
 const jwt = require("jsonwebtoken")
+const sendMail = require("../helpers/sendMail")
 
 module.exports = {
     list: async (req, res) => {
@@ -52,6 +53,14 @@ module.exports = {
         //JWT
         const accessToken = jwt.sign(data.toJSON(), process.env.ACCESS_KEY, { expiresIn: "15m" })
         const refreshToken = jwt.sign({ _id: data._id, password: data.password }, process.env.REFRESH_KEY, { expiresIn: "3d" })
+
+        sendMail(
+            data.email,
+            "Welcome",
+            ` <h1>Welcome</h1>
+            <h2>${data.username}</h2>
+            <p>"Welcome to our stock management system</p>`
+        )
 
         res.status(200).send({
             error: false,
